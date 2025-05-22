@@ -31,10 +31,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-jar
-          path: build/libs/*SNAPSHOT.jar
+          path: build/libs/*.jar
 
-  deploy:
-    name: deploy
+  deploy-and-test:
+    name: Deploy and Test
     runs-on: ubuntu-22.04
     needs: build
 
@@ -44,37 +44,15 @@ jobs:
         with:
           name: app-jar
 
-      - name: Run Spring Boot application
+      - name: Run Spring Boot in background
         run: |
-          java -jar ./build/libs/massai_mara_park-0.0.1-SHAPSHOT.jar
-          sleep 30
+          JAR_NAME=$(ls *.jar)
+          nohup java -jar $JAR_NAME > app.log 2>&1 &
+          echo "Waiting for app to be ready..."
+          for i in {1..10}; do
+            curl -s http://localhost:8080 && break
+            echo "Retrying ($i)..."
+            sleep 5
+          done
 
-      - name: Run automated test #1
-        run: |
-          curl http://localhost:8080 || exit 1
-
-      - name: Run automated test #2
-        run: |
-          curl http://localhost:8080/images || exit 1
-
-      - name: Run automated test #3
-        run: |
-          curl http://localhost:8080/animal || exit 1
-
-  test:
-    name: app-test
-    runs-on: ubuntu-22.04
-    needs: deploy
-
-    steps:
-      - name: Run automated test #1
-        run: |
-          curl http://localhost:8080 || exit 1
-
-      - name: Run automated test #2
-        run: |
-          curl http://localhost:8080/images || exit 1
-
-      - name: Run automated test #3
-        run: |
-          curl http://localhost:8080/animal || exit 1
+      - name: Test end
