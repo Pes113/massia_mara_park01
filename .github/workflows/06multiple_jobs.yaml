@@ -5,6 +5,7 @@ on:
 
 jobs:
   build:
+    name: build JAR
     runs-on: ubuntu-22.04
 
     steps:
@@ -33,6 +34,7 @@ jobs:
           path: build/libs/*.jar
 
   deploy:
+    name: deploy
     runs-on: ubuntu-22.04
     needs: build
 
@@ -49,6 +51,7 @@ jobs:
           sleep 30
 
   test:
+    name: app-test
     runs-on: ubuntu-22.04
     needs: deploy
 
