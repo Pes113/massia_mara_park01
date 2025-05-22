@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    name: build JAR
+    name: Build JAR
     runs-on: ubuntu-22.04
 
     steps:
@@ -33,8 +33,8 @@ jobs:
           name: app-jar
           path: build/libs/*SNAPSHOT.jar
 
-  deploy:
-    name: deploy
+  deploy-and-test:
+    name: Deploy and Test
     runs-on: ubuntu-22.04
     needs: build
 
@@ -44,19 +44,27 @@ jobs:
         with:
           name: app-jar
 
-      - name: Run Spring Boot application
+      - name: Run Spring Boot app in background
         run: |
-          java -jar ./build/libs/massai_mara_park-0.0.1-SHAPSHOT.jar & || exit 1
-          sleep 30
+          JAR_NAME=$(ls *SNAPSHOT.jar)
+          echo "Running Spring Boot app: $JAR_NAME"
+          nohup java -jar $JAR_NAME > app.log 2>&1 &
+          echo "Waiting for app to start..."
+          for i in {1..10}; do
+            curl -s http://localhost:8080 && break
+            echo "Waiting... ($i)"
+            sleep 5
+          done
 
-      - name: Run automated test #1
-        run: |
-          curl http://localhost:8080 || exit 1
+      - name: Run test #1 - root endpoint
+        run: curl -f http://localhost:8080
 
-      - name: Run automated test #2
-        run: |
-          curl http://localhost:8080/images || exit 1
+      - name: Run test #2 - images endpoint
+        run: curl -f http://localhost:8080/images
 
-      - name: Run automated test #3
-        run: |
-          curl http://localhost:8080/animal || exit 1
+      - name: Run test #3 - animal endpoint
+        run: curl -f http://localhost:8080/animal
+
+      - name: Show Spring Boot logs on failure
+        if: failure()
+        run: cat app.log
