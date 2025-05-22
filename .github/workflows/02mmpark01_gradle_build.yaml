@@ -20,10 +20,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: grant execute permisiion
-        run: chmod 777 gradlew
-
-      - name: grant execute permisiion
-        run: chmod 777 ./gradlew
+        run: chmod +x ./gradlew
 
       - name: build with gradle
         run: ./gradlew clean build 
@@ -38,12 +35,12 @@ jobs:
 
       - name: run automated test #1
         run: |
-           curl httl://localhost:8080 || exit 1
+           curl http://localhost:8080 || exit 1
 
       - name: run automated test #2
         run: |
-           curl httl://localhost:8080/images || exit 1
+           curl http://localhost:8080/images || exit 1
 
       - name: run automated test #3
         run: |
-           curl httl://localhost:8080/animal || exit 1
+           curl http://localhost:8080/animal || exit 1
