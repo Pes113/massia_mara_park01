@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-jar
-          path: build/libs/*.jar
+          path: build/libs/*SNAPSHOT.jar
 
   deploy:
     name: deploy
@@ -46,16 +46,9 @@ jobs:
 
       - name: Run Spring Boot application
         run: |
-          JAR_FILE=$(ls *.jar)
-          java -jar $JAR_FILE &
+          java -jar ./build/libs/massai_mara_park-0.0.1-SHAPSHOT.jar & || exit 1
           sleep 30
 
-  test:
-    name: app-test
-    runs-on: ubuntu-22.04
-    needs: deploy
-
-    steps:
       - name: Run automated test #1
         run: |
           curl http://localhost:8080 || exit 1
