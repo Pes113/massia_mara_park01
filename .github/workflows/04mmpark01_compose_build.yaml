@@ -1,10 +1,10 @@
-name: massai mara park 01 gradle build
+name: massai mara park 01 compose build
 
 on:
   workflow_dispatch
 
 jobs:
-  mmpark01_gradle_build:
+  mmpark01_compose_build:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
@@ -17,7 +17,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
             context: .
-            file: ./Dockerfile
+            file: Dockerfile
             push: false
             load: true
             tags: massai_mara:v1
