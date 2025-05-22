@@ -18,9 +18,9 @@ jobs:
 
       - name: docker operation
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/massai_mara:v2
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/massai_mara:v2 .
 
-          docker push ${{ secrets.DOCKER_USERNAME }}/massai_mara:v2
+          docker push ${{ secrets.DOCKER_USERNAME }}/massai_mara:v2 .
 
       - name: logout from docker hub
         if: always()
