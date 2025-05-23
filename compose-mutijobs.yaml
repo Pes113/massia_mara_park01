@@ -2,7 +2,7 @@ version: "3.0"
 
 service:
   app:
-    image: massai_mara:latest
+    image: dmstkd113@naver.com/massai_mara:latest
     container_name: massai_mara_app
     ports:
       - "8080:8080"
