@@ -1,7 +1,7 @@
 name: massai mara park 01 multiple jobs
 
 on:
-  workflow_dispatch:
+  workflow_dispatch
 
 jobs:
   build:
